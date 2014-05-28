@@ -7,9 +7,8 @@ package dessavezvai;
 public class NodoB {
 
     public int mNumKeys = 0;
-    public int[] mKeys = new int[2 * ArvoreB.T - 1];
-    // public Object[] mObjects = new Object[2 * ArvoreB.T - 1];
-    public NodoB[] bNodosFilhos = new NodoB[2 * ArvoreB.T];
+    public int[] mKeys = new int[2 * ArvoreB.T + 1];
+    public NodoB[] bNodosFilhos = new NodoB[2 * ArvoreB.T + 1];
     public boolean isFolha;
 
     int buscaBinaria(int key) {

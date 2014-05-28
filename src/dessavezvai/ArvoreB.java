@@ -342,33 +342,4 @@ public class ArvoreB {
     public String toString() {
         return printBTree(bRaiz);
     }
-
-    void validate() throws Exception {
-        ArrayList<Integer> array = getKeys(bRaiz);
-        for (int i = 0; i < array.size() - 1; i++) {
-            if (array.get(i) >= array.get(i + 1)) {
-                throw new Exception("B-Tree invalid: " + array.get(i) + " greater than " + array.get(i + 1));
-            }
-        }
-    }
-
-    // Inorder walk over the tree.
-    public ArrayList<Integer> getKeys(NodoB nodo) {
-        ArrayList<Integer> array = new ArrayList<Integer>();
-        if (nodo != null) {
-            if (nodo.isFolha) {
-                for (int i = 0; i < nodo.mNumKeys; i++) {
-                    array.add(nodo.mKeys[i]);
-                }
-            } else {
-                int i;
-                for (i = 0; i < nodo.mNumKeys; i++) {
-                    array.addAll(getKeys(nodo.bNodosFilhos[i]));
-                    array.add(nodo.mKeys[i]);
-                }
-                array.addAll(getKeys(nodo.bNodosFilhos[i]));
-            }
-        }
-        return array;
-    }
 }
