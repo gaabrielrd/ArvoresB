@@ -8,49 +8,47 @@ public class NodoB {
 
     public int mNumKeys = 0;
     public int[] mKeys = new int[2 * ArvoreB.T - 1];
-    public Object[] mObjects = new Object[2 * ArvoreB.T - 1];
+    // public Object[] mObjects = new Object[2 * ArvoreB.T - 1];
     public NodoB[] bNodosFilhos = new NodoB[2 * ArvoreB.T];
     public boolean isFolha;
 
-    int binarySearch(int key) {
-        int leftIndex = 0;
-        int rightIndex = mNumKeys - 1;
+    int buscaBinaria(int key) {
+        int esquerdaI = 0;
+        int direitaI = mNumKeys - 1;
 
-        while (leftIndex <= rightIndex) {
-            final int middleIndex = leftIndex + ((rightIndex - leftIndex) / 2);
-            if (mKeys[middleIndex] < key) {
-                leftIndex = middleIndex + 1;
-            } else if (mKeys[middleIndex] > key) {
-                rightIndex = middleIndex - 1;
+        while (esquerdaI <= direitaI) {
+            final int i = esquerdaI + ((direitaI - esquerdaI) / 2);
+            if (mKeys[i] < key) {
+                esquerdaI = i + 1;
+            } else if (mKeys[i] > key) {
+                direitaI = i - 1;
             } else {
-                return middleIndex;
+                return i;
             }
         }
-
+        //retorna -1 quando não achou
         return -1;
     }
 
     boolean contains(int key) {
-        return binarySearch(key) != -1;
+        return buscaBinaria(key) != -1;
     }
 
-    // Remove an element from a node and also the left (0) or right (+1) child.
-    void remove(int index, int leftOrRightChild) {
+    // Remove uma chave do nodo e também o filho direito (1) ou esquerdo (0) 
+    void remove(int index, int direitaOuEsquerda) {
         if (index >= 0) {
             int i;
             for (i = index; i < mNumKeys - 1; i++) {
                 mKeys[i] = mKeys[i + 1];
-                mObjects[i] = mObjects[i + 1];
                 if (!isFolha) {
-                    if (i >= index + leftOrRightChild) {
+                    if (i >= index + direitaOuEsquerda) {
                         bNodosFilhos[i] = bNodosFilhos[i + 1];
                     }
                 }
             }
             mKeys[i] = 0;
-            mObjects[i] = null;
             if (!isFolha) {
-                if (i >= index + leftOrRightChild) {
+                if (i >= index + direitaOuEsquerda) {
                     bNodosFilhos[i] = bNodosFilhos[i + 1];
                 }
                 bNodosFilhos[i + 1] = null;
@@ -59,20 +57,19 @@ public class NodoB {
         }
     }
 
-    void shiftRightByOne() {
+    void empurraPraDireita() {
         if (!isFolha) {
             bNodosFilhos[mNumKeys + 1] = bNodosFilhos[mNumKeys];
         }
         for (int i = mNumKeys - 1; i >= 0; i--) {
             mKeys[i + 1] = mKeys[i];
-            mObjects[i + 1] = mObjects[i];
             if (!isFolha) {
                 bNodosFilhos[i + 1] = bNodosFilhos[i];
             }
         }
     }
 
-    int subtreeRootNodeIndex(int key) {
+    int indexDaSubArvore(int key) {
         for (int i = 0; i < mNumKeys; i++) {
             if (key < mKeys[i]) {
                 return i;

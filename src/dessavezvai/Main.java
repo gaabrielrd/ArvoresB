@@ -5,8 +5,7 @@
  */
 package dessavezvai;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Random;
 
 /**
  *
@@ -16,20 +15,19 @@ public class Main {
 
     public static void main(String[] args) {
         ArvoreB arvore = new ArvoreB();
-        arvore.add(10, null);
-        arvore.add(10, null);
-        arvore.add(2, null);
-        arvore.add(44, null);
-        arvore.add(26, null);
-        arvore.add(53, null);
-        arvore.add(1, null);
-        arvore.add(77, null);
-        arvore.add(64, null);
+        Random geranumeros = new Random();
+        for(int i = 0; i < 50;i++){
+            arvore.add(geranumeros.nextInt(100000));
+        }
 
         System.out.println(arvore.toString());
 
         arvore.delete(26);
         
         System.out.println(arvore.toString());
+        
+        if(arvore.search(10)){
+            System.out.println("Achou!");
+        }
     }
 }
