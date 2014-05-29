@@ -2,7 +2,7 @@ package dessavezvai;
 
 /**
  *
- * @author groda
+ * @author GabrielRoda, MattheusSgrott
  */
 public class NodoB {
 

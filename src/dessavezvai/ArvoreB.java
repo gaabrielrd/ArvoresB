@@ -1,6 +1,9 @@
 package dessavezvai;
 
-import java.util.ArrayList;
+/**
+ * 
+ *   @author GabrielRoda, MattheusSgrott
+ */
 
 public class ArvoreB {
 
@@ -30,17 +33,15 @@ public class ArvoreB {
         }
     }
 
-    // Split the nodo, nodo, of a B-Tree into two nodos that both contain T-1 elements and move nodo's median chave up to the nodoPai.
-    // This method will only be called if nodo is full; nodo is the i-th child of nodoPai.
     public void divideNodoFilho(NodoB nodoPai, int i, NodoB nodo) {
         NodoB bNovoNodo = new NodoB();
         bNovoNodo.isFolha = nodo.isFolha;
         bNovoNodo.mNumKeys = T - 1;
-        for (int j = 0; j < T - 1; j++) { // Copy the last T-1 elements of nodo into bNovoNodo.
+        for (int j = 0; j < T - 1; j++) { 
             bNovoNodo.mKeys[j] = nodo.mKeys[j + T];
         }
         if (!bNovoNodo.isFolha) {
-            for (int j = 0; j < T; j++) { // Copy the last T pointers of nodo into bNovoNodo.
+            for (int j = 0; j < T; j++) { 
                 bNovoNodo.bNodosFilhos[j] = nodo.bNodosFilhos[j + T];
             }
             for (int j = T; j <= nodo.mNumKeys; j++) {
@@ -52,7 +53,6 @@ public class ArvoreB {
         }
         nodo.mNumKeys = T - 1;
 
-        // Insert a (child) pointer to nodo bNovoNodo into the nodoPai, moving other chaves and pointers as necessary.
         for (int j = nodoPai.mNumKeys; j >= i + 1; j--) {
             nodoPai.bNodosFilhos[j + 1] = nodoPai.bNodosFilhos[j];
         }
@@ -95,9 +95,9 @@ public class ArvoreB {
     }
 
     private void delete(NodoB nodo, int chave) {
-        if (nodo.isFolha) { // 1. If the chave is in nodo and nodo is a leaf nodo, then delete the chave from nodo.
+        if (nodo.isFolha) { 
             int i;
-            if ((i = nodo.buscaBinaria(chave)) != -1) { // chave is i-th chave of nodo if nodo contains chave.
+            if ((i = nodo.buscaBinaria(chave)) != -1) { 
                 nodo.remove(i, ESQUERDA);
             }
         } else {
@@ -106,25 +106,25 @@ public class ArvoreB {
                 NodoB filhoEsquerdo = nodo.bNodosFilhos[i];
                 NodoB filhoDireito = nodo.bNodosFilhos[i + 1];
                 if (filhoEsquerdo.mNumKeys >= T) { // 2a. If the predecessor child nodo has at least T chaves...
-                    NodoB predecessorNode = filhoEsquerdo;
-                    NodoB erasureNode = predecessorNode; // Make sure not to delete a chave from a nodo with only T - 1 elements.
-                    while (!predecessorNode.isFolha) { // Therefore only descend to the previous nodo (erasureNode) of the predecessor nodo and delete the chave using 3.
-                        erasureNode = predecessorNode;
-                        predecessorNode = predecessorNode.bNodosFilhos[nodo.mNumKeys - 1];
+                    NodoB nodoDaEsquerda = filhoEsquerdo;
+                    NodoB vaiSerApagado = nodoDaEsquerda; // Make sure not to delete a chave from a nodo with only T - 1 elements.
+                    while (!nodoDaEsquerda.isFolha) { // Therefore only descend to the previous nodo (erasureNode) of the predecessor nodo and delete the chave using 3.
+                        vaiSerApagado = nodoDaEsquerda;
+                        nodoDaEsquerda = nodoDaEsquerda.bNodosFilhos[nodo.mNumKeys - 1];
                     }
-                    nodo.mKeys[i] = predecessorNode.mKeys[predecessorNode.mNumKeys - 1];
+                    nodo.mKeys[i] = nodoDaEsquerda.mKeys[nodoDaEsquerda.mNumKeys - 1];
 
-                    delete(erasureNode, nodo.mKeys[i]);
+                    delete(vaiSerApagado, nodo.mKeys[i]);
                 } else if (filhoDireito.mNumKeys >= T) { // 2b. If the successor child nodo has at least T chaves...
-                    NodoB successorNode = filhoDireito;
-                    NodoB erasureNode = successorNode; // Make sure not to delete a chave from a nodo with only T - 1 elements.
-                    while (!successorNode.isFolha) { // Therefore only descend to the previous nodo (erasureNode) of the predecessor nodo and delete the chave using 3.
-                        erasureNode = successorNode;
-                        successorNode = successorNode.bNodosFilhos[0];
+                    NodoB nodoDaDireita = filhoDireito;
+                    NodoB vaiSerApagado = nodoDaDireita; // Make sure not to delete a chave from a nodo with only T - 1 elements.
+                    while (!nodoDaDireita.isFolha) { // Therefore only descend to the previous nodo (erasureNode) of the predecessor nodo and delete the chave using 3.
+                        vaiSerApagado = nodoDaDireita;
+                        nodoDaDireita = nodoDaDireita.bNodosFilhos[0];
                     }
-                    nodo.mKeys[i] = successorNode.mKeys[0];
+                    nodo.mKeys[i] = nodoDaDireita.mKeys[0];
 
-                    delete(erasureNode, nodo.mKeys[i]);
+                    delete(vaiSerApagado, nodo.mKeys[i]);
                 } else { // 2c. If both the predecessor and the successor child nodo have only T - 1 chaves...
                     // If both of the two child nodos to the left and right of the deleted element have the minimum number of elements,
                     // namely T - 1, they can then be joined into a single nodo with 2 * T - 2 elements.
